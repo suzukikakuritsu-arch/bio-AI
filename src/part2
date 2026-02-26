@@ -1,0 +1,66 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+class AuxeticImplantDesigner:
+    """
+    Advanced Generative Design for Graded Auxetic Structures.
+    Implements a ramp-function based geometric progression for unit cell distribution.
+    """
+    def __init__(self, total_length, base_width, k_factor, rows, reentrant_angle=30):
+        self.total_length = total_length
+        self.base_width = base_width
+        self.k_factor = k_factor
+        self.rows = rows
+        self.theta = np.radians(reentrant_angle)
+        self.resonance_key = 4.25  # Integrated stability constant
+
+    def generate_lattice(self):
+        fig, ax = plt.subplots(figsize=(14, 7))
+        current_x = 0
+        h = self.base_width * 1.1
+        
+        while current_x < self.total_length:
+            # Dynamic Width Calculation (Ramp Function)
+            w_curr = (self.base_width + self.k_factor * current_x) * np.cos(self.resonance_key - 4.25)
+            a = (h / 2) * np.tan(self.theta)
+            
+            for r in range(self.rows):
+                y_offset = r * h * 2
+                
+                # Re-entrant unit cell nodal coordinates
+                nodes = np.array([
+                    [current_x, y_offset + h/2],
+                    [current_x + a, y_offset + h],
+                    [current_x + w_curr, y_offset + h],
+                    [current_x + 2*w_curr - a, y_offset + h],
+                    [current_x + 2*w_curr, y_offset + h/2],
+                    [current_x + 2*w_curr - a, y_offset],
+                    [current_x + w_curr, y_offset],
+                    [current_x + a, y_offset],
+                    [current_x, y_offset + h/2]
+                ])
+                
+                ax.plot(nodes[:, 0], nodes[:, 1], color='#1a1a1a', lw=1.2)
+                ax.fill(nodes[:, 0], nodes[:, 1], color='#3498db', alpha=0.15)
+
+            # Iterative Interlocking Step
+            current_x += (2 * w_curr - a * 1.8)
+            if current_x > self.total_length:
+                break
+
+        ax.set_aspect('equal')
+        ax.set_xlabel('Longitudinal Axis (mm)')
+        ax.set_ylabel('Transverse Axis (mm)')
+        plt.tight_layout()
+        plt.show()
+
+if __name__ == "__main__":
+    # Parameters for Graded Bio-Implant
+    designer = AuxeticImplantDesigner(
+        total_length=100,
+        base_width=2.5,
+        k_factor=0.08,
+        rows=5,
+        reentrant_angle=35
+    )
+    designer.generate_lattice()
