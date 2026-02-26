@@ -50,6 +50,7 @@ cd auxetic-bio-implant-protocol
 # Execute the generator
 python auxetic_designer.py
 
+
 Theoretical Background
 This project is an application of IET-SYNC, a methodology focused on the emergence of complex structural properties from fundamental information seeds. By locking the physical geometry to a specific mathematical resonance, we achieve a "Physical Lock" that ensures the structure's long-term stability within the human body.
 License
